@@ -20,9 +20,55 @@ except:
     ctx = mx.cpu()
 
 
+class PreActBottleneckSEBlock(HybridBlock):
+    '''
+        SE
+    '''
+    
+    def __init__(self, channels, stride=1, downsample=False, **kwargs):
+        super(PreActBottleneckSEBlock, self).__init__(**kwargs)
+        self.expansion = 4
+        self.downsample = downsample
+        self.bn1 = nn.BatchNorm()
+        self.conv1 = nn.Conv2D(channels=channels, kernel_size=1, use_bias=False,
+                               weight_initializer=init.Normal(math.sqrt(2. / (1. * channels))))
+        self.bn2 = nn.BatchNorm()
+        self.conv2 = nn.Conv2D(channels=channels, kernel_size=3, strides=stride, padding=1, use_bias=False,
+                               weight_initializer=init.Normal(math.sqrt(2. / (9. * channels))))
+        self.bn3 = nn.BatchNorm()
+        self.conv3 = nn.Conv2D(channels=self.expansion * channels, kernel_size=1, use_bias=False,
+                               weight_initializer=init.Normal(math.sqrt(2. / (1. * self.expansion * channels))))
+        if downsample:
+            self.shortcut = nn.HybridSequential()
+            self.shortcut.add(
+                nn.Conv2D(channels=self.expansion * channels, kernel_size=1, strides=stride, use_bias=False,
+                          weight_initializer=init.Normal(math.sqrt(2. / (1. * self.expansion * channels))))
+            )
+        
+        self.net_se_conv = nn.HybridSequential()
+        self.net_se_conv.add(
+            nn.GlobalAvgPool2D(),
+            nn.Dense(self.expansion * channels / net_se_ratio, use_bias=False),
+            nn.Activation(activation='relu'),
+            nn.Dense(self.expansion * channels, activation='sigmoid', use_bias=False)
+        )
+    
+    def hybrid_forward(self, F, x):
+        out = F.relu(self.bn1(x))
+        shortcut = self.shortcut(out) if self.downsample else x
+        out = self.conv1(out)
+        out = self.conv2(F.relu(self.bn2(out)))
+        out = self.conv3(F.relu(self.bn3(out)))
+        
+        se_out = self.net_se_conv(out)
+        se_out = se_out.reshape(shape=se_out.shape + (1, 1,))
+        out = out * se_out + shortcut
+        return out
+
+
 class PreActBottleneckCMPESEBlockV1(HybridBlock):
     '''
-    Double FC
+        Double FC
     '''
     
     def __init__(self, channels, stride=1, downsample=False, **kwargs):
@@ -82,7 +128,7 @@ class PreActBottleneckCMPESEBlockV1(HybridBlock):
 
 class PreActBottleneckCMPESEBlockV2(HybridBlock):
     '''
-    Conv_2x1 or conv_1x1 pair-view
+        Conv_2x1 or conv_1x1 pair-view
     '''
     
     def __init__(self, channels, stride=1, downsample=False, **kwargs):
@@ -189,7 +235,7 @@ class CMPESEResNet(HybridBlock):
 CMPE_SE_block_versions = [PreActBottleneckCMPESEBlockV1, PreActBottleneckCMPESEBlockV2]
 
 
-def get_cifar_se_resnet(version, num_layers, **kwargs):
+def _get_resnet_spec(num_layers):
     '''
     resnet164:  [18, 18, 18] , [16, 32, 64]
     '''
@@ -197,24 +243,40 @@ def get_cifar_se_resnet(version, num_layers, **kwargs):
     n = (num_layers - 2) // 9
     channels = [16, 32, 64]
     layers = [n] * len(channels)
-    
+    return layers, channels
+
+
+def get_se_resnet(num_layers, **kwargs):
+    layers, channels = _get_resnet_spec(num_layers)
+    net = CMPESEResNet(PreActBottleneckSEBlock, layers, channels, **kwargs)
+    return net
+
+
+def get_cmpe_se_resnet(version, num_layers, **kwargs):
+    layers, channels = _get_resnet_spec(num_layers)
     block_class = CMPE_SE_block_versions[version - 1]
     net = CMPESEResNet(block_class, layers, channels, **kwargs)
     return net
 
 
+def cmpe_se_resnet164(**kwargs):
+    return get_se_resnet(num_layers=164, **kwargs)
+
+
 def cmpe_se_v1_resnet164(**kwargs):
-    return get_cifar_se_resnet(version=1, num_layers=164, **kwargs)
+    return get_cmpe_se_resnet(version=1, num_layers=164, **kwargs)
 
 
 def cmpe_se_v2_resnet164(use_1x1=True, **kwargs):
     global CMPESEBlockV2_kernel
     CMPESEBlockV2_kernel = (1, 1) if use_1x1 else (1, 2)
-    return get_cifar_se_resnet(version=2, num_layers=164, **kwargs)
+    return get_cmpe_se_resnet(version=2, num_layers=164, **kwargs)
 
+
+# net = cmpe_se_v2_resnet164(use_1x1=True, classes=10)
 
 def get_net():
-    net = cmpe_se_v2_resnet164(use_1x1=True, classes=100)
+    net = cmpe_se_v2_resnet164(use_1x1=True, classes=10)
     params_net = net.collect_params()
     params_net.initialize(ctx=ctx, init=init.Xavier())
     _ = net(nd.random_normal(shape=(128, 3, 32, 32), ctx=ctx))
