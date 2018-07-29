@@ -5,7 +5,6 @@ from mxnet.gluon.block import HybridBlock
 from mxnet.gluon import nn
 from mxnet import init
 from mxnet import ndarray as nd
-from src import utils
 import math
 
 net_se_ratio = 16
@@ -273,15 +272,4 @@ def cmpe_se_v2_resnet164(use_1x1=True, **kwargs):
     return get_cmpe_se_resnet(version=2, num_layers=164, **kwargs)
 
 
-# net = cmpe_se_v2_resnet164(use_1x1=True, classes=10)
-
-def get_net():
-    net = cmpe_se_v2_resnet164(use_1x1=True, classes=10)
-    params_net = net.collect_params()
-    params_net.initialize(ctx=ctx, init=init.Xavier())
-    _ = net(nd.random_normal(shape=(128, 3, 32, 32), ctx=ctx))
-    utils.print_params_num(params_net)
-    return net, params_net
-
-
-net, params_net = get_net()
+# net = cmpe_se_v2_resnet164(use_1x1=True, classes=100)
