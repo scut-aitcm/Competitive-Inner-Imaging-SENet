@@ -44,11 +44,11 @@ class SEBlock(HybridBlock):
     
     def hybrid_forward(self, F, x):
         """Hybrid forward"""
-        residual = x
+        shortcut = x
         x = self.bn1(x)
         x = F.Activation(x, act_type='relu')
         if self.downsample:
-            residual = self.downsample(x)
+            shortcut = self.downsample(x)
         conv_out = self.conv1(x)
         conv_out = self.bn2(conv_out)
         conv_out = F.Activation(conv_out, act_type='relu')
@@ -58,7 +58,7 @@ class SEBlock(HybridBlock):
         
         se_out = self.net_se_conv(conv_out)
         se_out = se_out.reshape(shape=se_out.shape + (1, 1,))
-        return conv_out * se_out + residual
+        return conv_out * se_out + shortcut
 
 
 class CMPESEBlockV1(HybridBlock):
@@ -97,21 +97,21 @@ class CMPESEBlockV1(HybridBlock):
     
     def hybrid_forward(self, F, x):
         """Hybrid forward"""
-        residual = x
+        shortcut = x
         x = self.bn1(x)
         x = F.Activation(x, act_type='relu')
         if self.downsample:
-            residual = self.downsample(x)
+            shortcut = self.downsample(x)
         conv_out = self.conv1(x)
         conv_out = self.bn2(conv_out)
         conv_out = F.Activation(conv_out, act_type='relu')
         conv_out = self.conv2(conv_out)
         
         se_input_conv = self.net_se_input_conv(conv_out)
-        se_input_skipx = self.net_se_input_x(residual)
+        se_input_skipx = self.net_se_input_x(shortcut)
         se_input = nd.concat(se_input_conv, se_input_skipx, dim=1)
         se_out = self.net_se(se_input)
-        return conv_out * se_out + residual
+        return conv_out * se_out + shortcut
 
 
 class CMPESEBlockV2(HybridBlock):
@@ -150,11 +150,11 @@ class CMPESEBlockV2(HybridBlock):
     
     def hybrid_forward(self, F, x):
         """Hybrid forward"""
-        residual = x
+        shortcut = x
         x = self.bn1(x)
         x = F.Activation(x, act_type='relu')
         if self.downsample:
-            residual = self.downsample(x)
+            shortcut = self.downsample(x)
         conv_out = self.conv1(x)
         conv_out = self.bn2(conv_out)
         conv_out = F.Activation(conv_out, act_type='relu')
@@ -162,7 +162,7 @@ class CMPESEBlockV2(HybridBlock):
         
         se_input_conv = self.net_Global_conv(conv_out)
         se_input_conv = se_input_conv.reshape(shape=(se_input_conv.shape[0], 1, se_input_conv.shape[1], 1))
-        se_input_skipx = self.net_Global_skipx(residual)
+        se_input_skipx = self.net_Global_skipx(shortcut)
         se_input_skipx = se_input_skipx.reshape(shape=(se_input_skipx.shape[0], 1, se_input_skipx.shape[1], 1))
         
         conv_x_concat = nd.concat(se_input_conv, se_input_skipx, dim=-1)
@@ -171,7 +171,7 @@ class CMPESEBlockV2(HybridBlock):
         se_out = self.net_SE(one_map)
         se_out = se_out.reshape(shape=se_out.shape + (1, 1,))
         
-        return conv_out * se_out + residual
+        return conv_out * se_out + shortcut
 
 
 class CIFARWideResNet(HybridBlock):
