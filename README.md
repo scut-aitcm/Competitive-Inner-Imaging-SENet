@@ -29,12 +29,12 @@ SE-ResNet module and CMPE-SE-ResNet modules:
 
 ## Citation
 
->@article{hu2018competitive,  
->  title={Competitive Inner-Imaging Squeeze and Excitation for Residual Network},  
->  author={Hu, Yang and Wen, Guihua and Luo, Mingnan and Dai, Dan},  
->  journal={arXiv preprint arXiv:1807.08920},  
->  year={2018}  
->}
+@article{hu2018competitive,  
+&emsp;  title={Competitive Inner-Imaging Squeeze and Excitation for Residual Network},  
+&emsp;  author={Hu, Yang and Wen, Guihua and Luo, Mingnan and Dai, Dan and Jiajiong, Ma},  
+&emsp;  journal={arXiv preprint arXiv:1807.08920},  
+&emsp;  year={2018}  
+}
 
 ## Results
 Best record of this novel model on CIFAR-10 and CIFAR-100 (used "*mixup*" ([https://arxiv.org/abs/1710.09412](https://arxiv.org/abs/1710.09412))) can achieve: **97.55%** and **84.38%**.
