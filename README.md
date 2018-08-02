@@ -28,8 +28,7 @@ SE-ResNet module and CMPE-SE-ResNet modules:
 - CUDA 8.0+(for GPU)
 
 ## Citation
->> 
-@article{hu2018competitive,
+> @article{hu2018competitive,
   title={Competitive Inner-Imaging Squeeze and Excitation for Residual Network},
   author={Hu, Yang and Wen, Guihua and Luo, Mingnan and Dai, Dan},
   journal={arXiv preprint arXiv:1807.08920},
