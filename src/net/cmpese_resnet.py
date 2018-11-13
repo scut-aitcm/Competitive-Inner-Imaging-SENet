@@ -18,7 +18,7 @@ class CMPESEResNet(HybridBlock):
             
             # stage1
             self.features.add(
-                self._make_layer(block, layers[0], channels[0], stride=1, stage_index=1, in_channels=16 / 4))
+                self._make_layer(block, layers[0], channels[0], stride=1, stage_index=1, in_channels=16))
             
             # stage2
             self.features.add(
@@ -48,8 +48,11 @@ class CMPESEResNet(HybridBlock):
         return x
 
 
-CMPE_SE_block_versions = [cmpese_resnetv2_block.PreActBottleneckCMPESEBlockV1,
-                          cmpese_resnetv2_block.PreActBottleneckCMPESEBlockV2]
+CMPE_SE_block_versions = [cmpese_resnetv2_block.PreActBottleneckCMPESEBlockDoubleFC,
+                          cmpese_resnetv2_block.PreActBottleneckCMPESEBlock1x1,
+                          cmpese_resnetv2_block.PreActBottleneckCMPESEBlock2x1,
+                          cmpese_resnetv2_block.PreActBottleneckCMPESEBlock3x3,
+                          ]
 
 
 def _get_resnet_spec(num_layers):
@@ -71,7 +74,7 @@ def get_se_resnet(num_layers, **kwargs):
 
 def get_cmpe_se_resnet(version, num_layers, **kwargs):
     layers, channels = _get_resnet_spec(num_layers)
-    block_class = CMPE_SE_block_versions[version - 1]
+    block_class = CMPE_SE_block_versions[version]
     net = CMPESEResNet(block_class, layers, channels, **kwargs)
     return net
 
@@ -80,12 +83,19 @@ def cmpe_se_resnet164(**kwargs):
     return get_se_resnet(num_layers=164, **kwargs)
 
 
-def cmpe_se_v1_resnet164(**kwargs):
+def cmpe_se_doublefc_resnet164(**kwargs):
+    return get_cmpe_se_resnet(version=0, num_layers=164, **kwargs)
+
+
+def cmpe_se_1x1_resnet164(**kwargs):
     return get_cmpe_se_resnet(version=1, num_layers=164, **kwargs)
 
 
-def cmpe_se_v2_resnet164(use_1x1=True, **kwargs):
-    cmpese_resnetv2_block.CMPESEBlockV2_kernel = (1, 1) if use_1x1 else (1, 2)
+def cmpe_se_2x1_resnet164(**kwargs):
     return get_cmpe_se_resnet(version=2, num_layers=164, **kwargs)
 
-# net = cmpe_se_v2_resnet164(use_1x1=True, classes=10)
+
+def cmpe_se_3x3_resnet164(use_1x1=True, **kwargs):
+    return get_cmpe_se_resnet(version=3, num_layers=164, **kwargs)
+
+# net = cmpe_se_3x3_resnet164(classes=10)

@@ -44,7 +44,11 @@ class CIFARWideResNet(HybridBlock):
         return x
 
 
-CMPE_SE_block_versions = [cmpese_wrn_block.CMPESEBlockV1, cmpese_wrn_block.CMPESEBlockV2]
+CMPE_SE_block_versions = [cmpese_wrn_block.CMPESEBlockDoubleFC,
+                          cmpese_wrn_block.CMPESEBlock1x1,
+                          cmpese_wrn_block.CMPESEBlock2x1,
+                          cmpese_wrn_block.CMPESEBlock3x3,
+                          ]
 
 
 def _get_wrn_spec(num_layers, width_factor):
@@ -63,7 +67,7 @@ def get_se_wrn(num_layers, width_factor, **kwargs):
 
 def get_cmpe_se_wrn(version, num_layers, width_factor, **kwargs):
     layers, channels = _get_wrn_spec(num_layers, width_factor)
-    block_class = CMPE_SE_block_versions[version - 1]
+    block_class = CMPE_SE_block_versions[version]
     net = CIFARWideResNet(block_class, layers, channels, **kwargs)
     return net
 
@@ -72,12 +76,19 @@ def se_wrn28_10(**kwargs):
     return get_se_wrn(num_layers=28, width_factor=10, **kwargs)
 
 
-def cmpe_se_v1_wrn28_10(**kwargs):
+def cmpe_se_doublefc_wrn28_10(**kwargs):
+    return get_cmpe_se_wrn(version=0, num_layers=28, width_factor=10, **kwargs)
+
+
+def cmpe_se_1x1_wrn28_10(**kwargs):
     return get_cmpe_se_wrn(version=1, num_layers=28, width_factor=10, **kwargs)
 
 
-def cmpe_se_v2_wrn28_10(use_1x1=True, **kwargs):
-    cmpese_wrn_block.CMPESEBlockV2_kernel = (1, 1) if use_1x1 else (1, 2)
-    return get_cmpe_se_wrn(version=2, num_layers=16, width_factor=8, **kwargs)
+def cmpe_se_2x1_wrn28_10(**kwargs):
+    return get_cmpe_se_wrn(version=2, num_layers=28, width_factor=10, **kwargs)
 
-# net = cmpe_se_v2_wrn28_10(use_1x1=False, classes=100)
+
+def cmpe_se_3x3_wrn28_10(**kwargs):
+    return get_cmpe_se_wrn(version=3, num_layers=28, width_factor=10, **kwargs)
+
+# net = cmpe_se_3x3_wrn28_10(classes=10)
