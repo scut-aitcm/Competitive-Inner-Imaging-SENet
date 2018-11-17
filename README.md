@@ -27,11 +27,15 @@ Inner-Imaging Mechanism for Channel Relation Modeling in Channel-wise Attention 
 |-|-|
 |![](pictures/Basic-Inner-Imaging.png)|![](pictures/Folded-Inner-Imaging.png)|
 
+---
+
 ## Requirements
 
 - **MXNet 1.2.0**
 - Python 2.7
 - CUDA 8.0+(for GPU)
+
+---
 
 ## Citation
 
@@ -42,10 +46,19 @@ Inner-Imaging Mechanism for Channel Relation Modeling in Channel-wise Attention 
 &emsp;  year={2018}  
 }
 
+Version-1: https://arxiv.org/abs/1807.08920v2
+Version-2: https://arxiv.org/abs/1807.08920v3
+
+---
+
 ## Results
 Best record of this novel model on CIFAR-10 and CIFAR-100 (used "*mixup*" ([https://arxiv.org/abs/1710.09412](https://arxiv.org/abs/1710.09412))) can achieve: **97.55%** and **84.38%**.
  
 The test result on Kaggle: [CIFAR-10 - Object Recognition in Images](https://www.kaggle.com/c/cifar-10) 
 
 ![](pictures/cifar10_kaggle.png)
+
+Inner-Imaging Examples & Channel-wise Attention Outputs
+
+![](pictures/appendix_a_fig1.png)
 
