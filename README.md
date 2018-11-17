@@ -21,9 +21,11 @@ SE-ResNet module and CMPE-SE-ResNet modules:
 |-|-|-|-|
 |![](pictures/se_resnet_module.png)|![](pictures/cmpe_se_resnet_double_FC_squeeze.png)|![](pictures/cmpe_se_resnet_conv2x1.png)|![](pictures/cmpe_se_resnet_conv1x1.png)|
 
-Inner-Imaging Mechanism for Channel Relation Modeling in Channel-wise Attention of ResNets (even All CNNs)
+Inner-Imaging Mechanism for Channel Relation Modeling in Channel-wise Attention of ResNets (even All CNNs):
+
+|Basic Inner-Imaing Mode|Folded Inner-Imaging Mode|
 |-|-|
-|![](pictures/fig3.pdf)|![](pictures/fig4.pdf)|
+|![](pictures/Basic-Inner-Imaging.png)|![](pictures/Folded-Inner-Imaging.png)|
 
 ## Requirements
 
