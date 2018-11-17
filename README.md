@@ -51,7 +51,7 @@ Version-2: https://arxiv.org/abs/1807.08920v3
 
 ---
 
-## Results
+## Essential Results
 Best record of this novel model on CIFAR-10 and CIFAR-100 (used "*mixup*" ([https://arxiv.org/abs/1710.09412](https://arxiv.org/abs/1710.09412))) can achieve: **97.55%** and **84.38%**.
  
 The test result on Kaggle: [CIFAR-10 - Object Recognition in Images](https://www.kaggle.com/c/cifar-10) 
