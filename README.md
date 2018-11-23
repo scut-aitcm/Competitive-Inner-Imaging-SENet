@@ -3,8 +3,7 @@
 
 Source code of paper: 
 
-   **Competitive Inner-Imaging Squeeze and Excitation for Residual Network** ([https://arxiv.org/abs/1807.08920](https://arxiv.org/abs/1807.08920))
-
+   **Competitive Inner-Imaging Squeeze and Excitation for Residual Network** 
 
 ---
 ## Architecture
@@ -39,16 +38,7 @@ The Novel Inner-Imaging Mechanism for Channel Relation Modeling in Channel-wise 
 
 ## Citation
 
-@article{hu2018competitive,  
-&emsp;  title={Competitive Inner-Imaging Squeeze and Excitation for Residual Network},  
-&emsp;  author={Hu, Yang and Wen, Guihua and Luo, Mingnan and Dai, Dan and Jiajiong, Ma},  
-&emsp;  journal={arXiv preprint arXiv:1807.08920},  
-&emsp;  year={2018}  
-}
-
-Version-1: https://arxiv.org/abs/1807.08920v2
-
-Version-2: https://arxiv.org/abs/1807.08920v3
+Not available
 
 ---
 
