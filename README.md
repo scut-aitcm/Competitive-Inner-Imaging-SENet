@@ -38,7 +38,7 @@ The Novel Inner-Imaging Mechanism for Channel Relation Modeling in Channel-wise 
 
 ## Citation
 
-Not available
+not available now
 
 ---
 
