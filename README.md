@@ -3,7 +3,7 @@
 
 Source code of paper: 
 
-   **Competitive Inner-Imaging Squeeze and Excitation for Residual Network** 
+   **(not availbale now)** 
 
 ---
 ## Architecture
