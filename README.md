@@ -1,4 +1,4 @@
-# CompetitiveSENet
+# Competitive-Inner-Imaging-SENet
 ---
 
 Source code of paper: 
